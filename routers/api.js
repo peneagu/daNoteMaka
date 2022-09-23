@@ -8,6 +8,19 @@ module.exports = (app) => {
         res.sendFile(path.join(__dirname, '../db/db.json'));
     });
 
+    app.get('/api/notes/:id', (req, res) => {
+        if (req.param.note_id) {
+          const noteId = req.params.note_id;
+          for(let i = 0; i < notes.length; i++) {
+              const currentNotes = notes[i];   
+              if (currentNotes.note_id === noteId) {
+                  res.json(currentNotes);
+                  return;
+              }
+          }    
+        }
+    });
+
     app.post('/api/notes', (req, res) => {
         console.log('set up new note');
         let db = fs.readFileSync('db/db.json');
@@ -23,18 +36,7 @@ module.exports = (app) => {
         res.send(db);
     });
 
-    app.get('/api/notes/:id', (req, res) => {
-        if (req.param.note_id) {
-          const noteId = req.params.note_id;
-          for(let i = 0; i < notes.length; i++) {
-              const currentNotes = notes[i];   
-              if (currentNotes.note_id === noteId) {
-                  res.json(currentNotes);
-                  return;
-              }
-          }    
-        }
-    });
+    
  
     app.delete('/api/notes/:id', (req, res) => {
         let db = JSON.parse(fs.readFileSync('db/db.json'));
